@@ -1,0 +1,18 @@
+# Środowisko wirtualne
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Dane (licencja MovieLens zabrania publicznego udostępniania zbioru)
+data/raw/
+data/processed/
+*.parquet
+*.pkl
+*.npy
+
+# Klucze API i konfiguracja lokalna
+.env
+
+# Notatniki i wykresy tymczasowe
+.ipynb_checkpoints/

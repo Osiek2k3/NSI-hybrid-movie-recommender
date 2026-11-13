@@ -1,0 +1,31 @@
+movieId,count,mean,std,polarization_score,title,genres,director,poster_path,primary_genre
+2710,1237,3.0315278900565885,1.3163677138860737,4.07069563199135,"Blair Witch Project, The (1999)",['Horror' 'Mystery'],"Daniel Myrick, Eduardo Sánchez",/9050VGrYjYrEjpOvDZVAngLbg1f.jpg,Horror
+2657,1233,3.291159772911598,1.2601772839374212,3.895161454615264,"Rocky Horror Picture Show, The (1975)",['Comedy' 'Horror' 'Musical' 'Sci-Fi' 'Science Fiction'],Jim Sharman,/3pyE6ZqDbuJi7zrNzzQzcKTWdmN.jpg,Comedy
+2700,1269,3.760441292356186,1.2353795291863594,3.8339529575512916,"South Park: Bigger, Longer and Uncut (1999)",['Animation' 'Comedy'],Trey Parker,/tS0PedvA2mFO9VCHYwQpaU1K36U.jpg,Animation
+2628,2250,3.409777777777778,1.1257495677652494,3.773718020834092,Star Wars: Episode I - The Phantom Menace (1999),['Action' 'Adventure' 'Fantasy' 'Sci-Fi' 'Science Fiction'],George Lucas,/6wkfovpn7Eq8dYNKaG5PY3q2oq6.jpg,Action
+2712,945,3.201058201058201,1.259623523675699,3.7479238990911954,Eyes Wide Shut (1999),['Drama' 'Thriller' 'Mystery'],Stanley Kubrick,/knEIz1eNGl5MQDbrEAVWA7iRqF9.jpg,Drama
+231,660,3.1924242424242424,1.3213331436461841,3.7255568519980713,Dumb & Dumber (1994),['Comedy'],Peter Farrelly,/4LdpBXiCyGKkR8FGHgjKlphrfUc.jpg,Comedy
+1721,1546,3.5834411384217333,1.167448492490018,3.723237810847723,Titanic (1997),['Drama' 'Romance'],James Cameron,/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg,Drama
+288,700,3.144285714285714,1.307197606900584,3.7191053493041784,Natural Born Killers (1994),['Action' 'Thriller' 'Crime' 'Drama'],Oliver Stone,/fEKZwT91gxvkAoyPgpNXo8W5fu0.jpg,Action
+1676,1163,3.1332760103181427,1.2032451167638634,3.688643821797363,Starship Troopers (1997),['Action' 'Adventure' 'Sci-Fi' 'War' 'Thriller' 'Science Fiction'],Paul Verhoeven,/cxCmv23O7p3hyHwqoktHYkZcGsY.jpg,Action
+1917,1110,3.191891891891892,1.203439250556881,3.6648612032946635,Armageddon (1998),['Action' 'Adventure' 'Sci-Fi' 'Thriller' 'Science Fiction'],Michael Bay,/eTM3qtGhDU8cvjpoa6KEt5E2auU.jpg,Action
+2683,1434,3.388423988842399,1.151063053735094,3.63338710539688,Austin Powers: The Spy Who Shagged Me (1999),['Comedy' 'Adventure' 'Crime'],Jay Roach,/jiF7UShERJFn5RtgfBK2lIJrOTc.jpg,Comedy
+1183,989,3.609706774519717,1.1858420943094599,3.551829843295527,"English Patient, The (1996)",['Drama' 'Romance' 'War'],Anthony Minghella,/8eHHqMg8qEYtVw8LQLygsHXSR2q.jpg,Drama
+3608,861,3.40534262485482,1.1859327718924257,3.480716422916438,Pee-wee's Big Adventure (1985),['Comedy' 'Adventure' 'Family'],Tim Burton,/414IUXc54mrhX88ZUQiRDLXn01i.jpg,Comedy
+3160,1113,3.8939802336028753,1.1322169265090885,3.449293391587844,Magnolia (1999),['Drama'],Paul Thomas Anderson,/tpfC325Jk6S38VTe5dDWjWtoyxr.jpg,Drama
+2021,789,3.356147021546261,1.1830672338798327,3.427436876523844,Dune (1984),['Fantasy' 'Sci-Fi' 'Action' 'Science Fiction' 'Adventure'],David Lynch,/4kJmUCE7mkVJjXa7A0g2rY4IGTm.jpg,Fantasy
+1206,1229,4.0781122864117165,1.1083416392682768,3.4242789984827633,"Clockwork Orange, A (1971)",['Sci-Fi' 'Science Fiction' 'Crime'],Stanley Kubrick,/4sHeTAp65WrSSuc05nRBKddhBxO.jpg,Sci-Fi
+2384,523,3.2906309751434035,1.2393794731648196,3.3692551909459945,Babe: Pig in the City (1998),"[""Children's"" 'Comedy' 'Family' 'Adventure' 'Drama']",George Miller,/glO6LcTWUZcbxWT2SB4eRDnFSsP.jpg,Children's
+34,1751,3.8914905768132497,1.0379604202733412,3.3664026512554788,Babe (1995),"[""Children's"" 'Comedy' 'Drama' 'Fantasy' 'Family']",Chris Noonan,/zKuQMtnbVTz9DsOnOJmlW71v4qH.jpg,Children's
+1035,882,3.931972789115646,1.1324931399726281,3.335722966666669,"Sound of Music, The (1965)",['Musical' 'Drama' 'Family' 'Music' 'Romance'],Robert Wise,/c6CrUZypAsBCaRWX0M3RVRDbhNS.jpg,Musical
+1088,687,3.3114992721979624,1.168924124554064,3.316187170265089,Dirty Dancing (1987),['Musical' 'Romance' 'Drama' 'Music'],Emile Ardolino,/9Jw6jys7q9gjzVX5zm1z0gC8gY9.jpg,Musical
+968,715,3.6713286713286712,1.1557687716184901,3.2989177877556695,Night of the Living Dead (1968),['Horror' 'Sci-Fi' 'Science Fiction'],George A. Romero,/rb2NWyb008u1EcKCOyXs2Nmj0ra.jpg,Horror
+296,2171,4.278212805158913,0.9799744813953991,3.269841480082609,Pulp Fiction (1994),['Crime' 'Drama' 'Thriller' 'Comedy'],Quentin Tarantino,/vQWk5YBFWF4bZaofAbv0tShwBvQ.jpg,Crime
+1997,885,3.9559322033898305,1.1028969237230175,3.2501746676388796,"Exorcist, The (1973)",['Horror'],William Friedkin,/5x0CeVHJI8tcDx8tUUwYHQSNILq.jpg,Horror
+1282,943,3.904559915164369,1.090107219431404,3.2425366705360883,Fantasia (1940),"['Animation' ""Children's"" 'Musical' 'Family' 'Fantasy']","Wilfred Jackson, Bill Roberts, Paul Satterfield, Samuel Armstrong, Jim Handley, T. Hee, Hamilton Luske, Ben Sharpsteen, James Algar, Norman Ferguson, David Hand, Ford Beebe Jr.",/5m9njnidjR0syG2gpVPVgcEMB2X.jpg,Animation
+3354,793,2.5952080706179066,1.1175040904882694,3.2399496462703845,Mission to Mars (2000),['Sci-Fi' 'Science Fiction' 'Adventure' 'Drama'],Brian De Palma,/cTKWoBpN5Gvi0vpMb9mLtYlwXqT.jpg,Sci-Fi
+3070,611,3.3878887070376433,1.1615918814579327,3.236242851224984,"Adventures of Buckaroo Bonzai Across the 8th Dimension, The (1984)",['Adventure' 'Comedy' 'Sci-Fi' 'Science Fiction'],W.D. Richter,/jWZh2ChereoxKgTl3AmSAKNpnmO.jpg,Adventure
+608,2513,4.254675686430561,0.9495656819561784,3.2287060992126846,Fargo (1996),['Crime' 'Drama' 'Thriller'],Joel Coen,/rt7cpEr1uP6RTZykBFhBTcRaKvG.jpg,Crime
+590,1451,3.9152308752584424,1.019997767968075,3.2248937037438896,Dances with Wolves (1990),['Adventure' 'Drama' 'Western'],Kevin Costner,/hw0ZEHAaTqTxSXGVwUFX7uvanSA.jpg,Adventure
+551,996,3.717871485943775,1.070256573544999,3.208906766140643,"Nightmare Before Christmas, The (1993)","[""Children's"" 'Comedy' 'Musical' 'Fantasy' 'Animation' 'Family']",Henry Selick,/oQffRNjK8e19rF7xVYEN8ew0j7b.jpg,Children's
+1405,475,3.04,1.190893718222272,3.187657605307952,Beavis and Butt-head Do America (1996),['Animation' 'Comedy' 'Adventure' 'Crime' 'Music'],Mike Judge,/vqdgQiRCSzgpFXLlbxbybfkleBM.jpg,Animation

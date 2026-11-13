@@ -1,0 +1,3 @@
+Model,RMSE,MAE
+Średnia globalna (Baseline),1.1490482091903687,0.9434049129486084
+CF - SVD (faktoryzacja macierzy jawnych ocen),0.93217533826828,0.7317842841148376

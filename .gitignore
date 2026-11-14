@@ -1,6 +1,8 @@
-# Środowisko wirtualne
+# Środowisko wirtualne i IDE
 .venv/
 venv/
+.idea/
+.vscode/
 __pycache__/
 *.py[cod]
 

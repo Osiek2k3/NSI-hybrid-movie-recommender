@@ -149,3 +149,39 @@ Dokument zawiera kompletną analizę wszystkich tabel, cech (atrybutów), rozkł
 | **Film-Noir** | 44 | 1,13% | 18 261 | 4,075 | 0,933 |
 
 *(Najbardziej polaryzującym gatunkiem o najwyższym odchyleniu standardowym i najniższej średniej jest **Horror** (`3,215 ± 1,226`), natomiast najwyższe oceny zbierają klasyki **Film-Noir** (`4,075`), **Documentary** (`3,933`) oraz **War** (`3,893`)).*
+
+---
+
+## 6. Analiza braków danych (`NULL`), anomalii oraz koniecznych ingerencji i symulacji
+
+### 6.1. Czy w danych występują wartości `NULL` / braki i anomalie?
+
+1. **Surowe tabele `ratings.dat` i `users.dat`:**
+   - W samych plikach tekstowych **nie ma formalnych wartości `NULL` (`0` braków)** – każdy z `1 000 209` wierszy ocen i `6 040` wierszy użytkowników ma komplet kolumn.
+   - Jednak na poziomie **macierzy interakcji użytkownik × film** (`6 040 × 3 883 = 23 453 320` par) aż **`22 453 111` komórek (`95,74%`) jest pustych (`NULL`)** – przeciętny użytkownik ocenił tylko `4,26%` katalogu.
+2. **Anomalie i luki w `movies.dat` (MovieLens 1M):**
+   - **Luki w kluczach `movieId`:** Identyfikatory filmów sięgają od `1` do `3 952`, ale w pliku `movies.dat` znajdują się tylko `3 883` filmy – **`69` numerów ID w ogóle nie istnieje** (zostały usunięte przez twórców zbioru przed publikacją).
+   - **Filmy bez ani jednej oceny (*Cold Items*):** Spośród `3 883` filmów w katalogu `movies.dat` aż **`177` filmów (`4,56%`) nie pojawia się ani razu w `ratings.dat`** (np. *Guardian Angel (1994)*, *Gospa (1995)*, *New York Cop (1996)*). Dla czystego filtrowania kolaboratywnego (ALS/SVD) te filmy mają wektor zerowy i nigdy nie zostaną polecone.
+   - **Niespójny zapis tytułów i roczników:** Tytuły mają przestawione rodzajniki na koniec (np. `Matrix, The (1999)`), często zawierają drugi tytuł obcojęzyczny w nawiasie (np. `Silence of the Palace, The (Saimt el Qusur) (1994)`), a w `movieId = 1001` (`Associate, The (L'Associe)(1982)`) brakuje spacji przed rokiem wydania.
+3. **Braki przy łączeniu z `links.csv` (`ml-latest-small`) oraz z API TMDB:**
+   - W `links.csv` z `ml-latest-small` brakowało powiązania `tmdbId` dla **`937` filmów** z MovieLens 1M (`24,1%`), a dla kolejnych **`5` filmów** przypisany `tmdbId` wskazywał na inny film (rozbieżność tytułu/roku po weryfikacji) – łącznie **`942` braki (`NULL`)** wymagały wyszukania w API TMDB po oczyszczonym tytule i roku.
+   - Po automatycznym odpytaniu wyszukiwarki TMDB (`GET /3/search/movie`) pozostało jedynie:
+     - **`11` filmów (`0,28%`) bez `tmdbId`** (niszowe produkcje i dokumenty z lat 1949–1997, np. *Aiqing wansui (1994)*, *Daughter of Dr. Jeckyll (1957)*),
+     - **`14` filmów (`0,36%`) z pustym opisem fabuły (`overview = ""`)** (w tym `11` niedopasowanych + `3` filmy istniejące w TMDB bez angielskiego opisu: *Criminals (1996)*, *Diebinnen (1995)*, *Mondo (1996)*),
+     - **`300` filmów (`7,73%`) bez słów kluczowych (`keywords = []`)**,
+     - **`26` filmów (`0,67%`) bez obsady (`cast = []`)**,
+     - **`16` filmów (`0,41%`) bez przypisanego reżysera (`director = ""`)**,
+     - **`21` filmów (`0,54%`) bez plakatu (`poster_path = ""`)**.
+
+---
+
+### 6.2. Dlaczego i jak musimy ingerować w dane oraz symulować wybrane scenariusze?
+
+| Obszar problemu w surowych danych | Dlaczego musimy zaingerować / symulować? | Jak dokładnie rozwiązujemy to w potoku danych? |
+| :--- | :--- | :--- |
+| **1. Brak cech treściowych w MovieLens 1M** | W `movies.dat` są wyłącznie tytuł, rok i ogólne gatunki (brak fabuły, słów kluczowych, reżysera i aktorów). Z samych gatunków nie da się zbudować precyzyjnych embeddingów semantycznych ani wyjaśnień LLM. | Wzbogacamy zbiór zewnętrznym API **TMDB**, łącząc `links.csv` z wyszukiwaniem po oczyszczonym tytule i roku (`99,72%` pokrycia). |
+| **2. Imputacja braków tekstowych z TMDB (`overview`, `keywords`)** | Wstawienie wartości `NULL` lub napisu `"None"` do tekstu kodowanego przez sieć Transformer (`all-MiniLM-L6-v2`) zniekształciłoby wektor embeddingu. | Stosujemy **imputację strukturalną (warunkowe składanie tekstu)**: jeśli film nie ma `overview` (14 filmów) lub `keywords` (300 filmów), `embedding_text` jest dynamicznie budowany wyłącznie z istniejących pól (tytułu, roku, gatunków MovieLens i obsady/reżysera). |
+| **3. Brak nowych i mało aktywnych użytkowników w MovieLens 1M (próg $\ge 20$ ocen)** | Twórcy MovieLens 1M celowo odfiltrowali wszystkich użytkowników mających mniej niż 20 ocen (`min = 20`). Bez ingerencji w dane **nie istniałby ani jeden użytkownik** w grupach Cold Start ($N=0$), $1\text{–}5$ ocen oraz $6\text{–}20$ ocen! | **Symulacja kontrolowana (ukrywanie historii):**<br>1) **Eksperyment Cold Start:** losujemy 15% użytkowników (`906` osób), całkowicie usuwamy ich z treningu CF i odsłaniamy chronologicznie tylko $N \in \{0, 1, 3, 5, 10\}$ pierwszych filmów ocenionych na 4–5★ jako wybór z onboardingu.<br>2) **Grupy aktywności (`1–5` i `6–20` ocen):** dla wylosowanych podgrup użytkowników przycinamy historię treningową do pierwszych $1..5$ lub $6..20$ chronologicznych ocen. |
+| **4. Przeciek informacji z przyszłości (*Data Leakage*) przy losowym podziale** | Zwykły losowy podział `train_test_split` sprawiłby, że model uczyłby się na ocenach wystawionych w 2002 roku, aby przewidywać filmy oglądane przez tego samego użytkownika w 2000 roku. | Stosujemy **podział chronologiczny po polu `timestamp`** wewnątrz każdego użytkownika (starsze 80% ocen do nauki, najnowsze 20% ocen do testu). |
+| **5. Przesunięcie skali ocen i brak jawnych negatywów w rankingu** | Średnia ocena w zbiorze to aż `3,58`, a ocena `1★` lub `2★` oznacza, że film się **nie podobał**. Wrzucenie wszystkich ocen do ALS traktowałoby obejrzany znienawidzony film jako sukces rekomendacji. | Przeprowadzamy **filtrację i ważenie sygnału**: za trafne rekomendacje (*relevant*) w ewaluacji oraz w macierzy implicit ALS uznajemy wyłącznie oceny pozytywne ($r_{ui} \ge 4$, stanowiące `57,52%` zbioru), z wagą pewności rosnącą wraz z oceną. |
+

@@ -43,7 +43,8 @@ System łączy **analizę treści filmów** (embeddingi z modelu **Transformer `
 ![Cold Start NDCG vs N](outputs/plots/cold_start_ndcg_vs_N.png)
 ![Grupy aktywności użytkowników](outputs/plots/activity_groups_ndcg.png)
 
-Pełny raport z eksploracyjnej analizy danych (EDA) znajduje się w pliku: **[outputs/eda/EDA_raport.md](outputs/eda/EDA_raport.md)**.
+Pełny raport z eksploracyjnej analizy danych (EDA) znajduje się w pliku: **[outputs/eda/EDA_raport.md](outputs/eda/EDA_raport.md)**.  
+Kompletne opracowanie teoretyczne (cechy, braki `NULL`, symulacja danych, klasyfikacja do podgrup, Feature Extraction, reprezentacja, funkcja celu, Baseline, Autoenkoder oraz pełny Pipeline) znajduje się w pliku: **[docs/Kompendium_Projektu_NSI.md](docs/Kompendium_Projektu_NSI.md)**.
 
 ---
 

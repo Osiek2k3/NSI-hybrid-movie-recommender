@@ -11,6 +11,7 @@ Dokument zbiera w jednym miejscu kompletne opracowanie teoretyczne i techniczne 
 8. **Modele Baseline (Punkty odniesienia)**
 9. **Autoenkodery (Autoencoders) w systemach rekomendacyjnych i ich związek z projektem**
 10. **Pełny Pipeline systemu (Architektura potoku przetwarzania krok po kroku)**
+11. **Testy statystyczne ANOVA i MANOVA (Teoria, wzory i wyniki empiryczne w projekcie)**
 
 ---
 
@@ -263,3 +264,74 @@ flowchart TD
 6. **Krok 6 – Generowanie wyjaśnień i warstwa prezentacji (`src/explanations.py` + `app.py`):**
    - Dla wybranego filmu z Top-10 moduł `RecommendationExplainer` znajduje najbardziej podobne filmy z historii użytkownika, wyznacza część wspólną reżyserów, aktorów i słów kluczowych z TMDB, dołącza wagę $\alpha(n_u)$ oraz przewidywaną ocenę gwiazdkową z SVD i składa wyjaśnienie w języku polskim.
    - Całość jest udostępniona w interaktywnej aplikacji `Streamlit` (`app.py`) z symulatorem onboardingu (30 polaryzujących filmów) i wymaganą atrybucją TMDB.
+
+---
+
+## 11. Testy statystyczne ANOVA i MANOVA (Teoria, wzory i wyniki w projekcie)
+
+Testy **ANOVA** i **MANOVA** służą do weryfikacji hipotez, czy obserwowane różnice pomiędzy podgrupami (np. podgrupami aktywności użytkowników, grupami demograficznymi lub porównywanymi modelami rekomendacyjnymi) są **istotne statystycznie ($p < 0,05$)**, czy wynikają jedynie z losowej wariancji próby.
+
+### 11.1. ANOVA (*Analysis of Variance* – Jednowymiarowa analiza wariancji)
+
+#### Cel i hipotezy badawcze
+ANOVA sprawdza, czy średnia wartość **jednej ciągłej zmiennej zależnej $Y$** różni się istotnie pomiędzy $k \ge 3$ podgrupami wyznaczonymi przez zmienną grupującą $X$:
+- **Hipoteza zerowa ($H_0$):** Średnie we wszystkich podgrupach są równe: $\mu_1 = \mu_2 = \dots = \mu_k$.
+- **Hipoteza alternatywna ($H_1$):** Co najmniej jedna podgrupa ma średnią różną od pozostałych ($\exists_{i \ne j}\; \mu_i \ne \mu_j$).
+
+#### Wzór i interpretacja statystyki $F$
+Całkowitą sumę kwadratów odchyleń ($\text{SS}_{\text{total}}$) dzielimy na zmienność **międzygrupową** ($\text{SS}_{\text{between}}$) oraz zmienność **wewnątrzgrupową / resztową** ($\text{SS}_{\text{within}}$):
+$$F = \frac{\text{MS}_{\text{between}}}{\text{MS}_{\text{within}}} = \frac{\text{SS}_{\text{between}} / (k - 1)}{\text{SS}_{\text{within}} / (N - k)}$$
+Duża wartość statystyki $F$ (oraz $p\text{-value} < 0,05$) oznacza, że różnice między badanymi podgrupami są znacznie większe niż naturalny rozrzut wyników wewnątrz podgrup – odrzucamy wówczas $H_0$.
+
+---
+
+### 11.2. MANOVA (*Multivariate Analysis of Variance* – Wielowymiarowa analiza wariancji)
+
+#### Cel i przewaga nad serią osobnych testów ANOVA
+MANOVA jest uogólnieniem testu ANOVA na sytuację, w której dla każdej obserwacji badamy naraz **wektor wielu skorelowanych ze sobą zmiennych zależnych** $\mathbf{Y} = [Y_1, Y_2, \dots, Y_p]^T$:
+- **Hipoteza zerowa ($H_0$):** Wektory średnich (centroidy) we wszystkich $k$ podgrupach są identyczne w przestrzeni $p$-wymiarowej: $\boldsymbol{\mu}_1 = \boldsymbol{\mu}_2 = \dots = \boldsymbol{\mu}_k$.
+- **Dlaczego MANOVA zamiast kilku testów ANOVA?**
+  1. **Uwzględnia korelację między cechami:** Metryki takie jak `NDCG@10`, `Precision@10` i `Recall@10` (lub cechy aktywności użytkownika) są ze sobą silnie skorelowane. MANOVA analizuje pełną macierz kowariancji, wykrywając różnice wielowymiarowe niewidoczne dla pojedynczej cechy.
+  2. **Kontroluje błąd I rodzaju (fałszywe alarmy):** Wykonywanie wielu oddzielnych testów ANOVA zwiększa ryzyko przypadkowego odrzucenia $H_0$.
+
+#### Statystyki testowe w MANOVA (Lambda Wilksa $\Lambda$ i Ślad Pillaia)
+Zamiast skalarnych sum kwadratów wyznaczamy **macierz kowariancji międzygrupowej $\mathbf{B}$** oraz **macierz kowariancji wewnątrzgrupowej $\mathbf{W}$** (gdzie $\mathbf{T} = \mathbf{B} + \mathbf{W}$):
+$$\Lambda_{\text{Wilksa}} = \frac{\det(\mathbf{W})}{\det(\mathbf{B} + \mathbf{W})} \in [0, 1], \qquad V_{\text{Pillaia}} = \text{tr}\!\left(\mathbf{B}(\mathbf{B} + \mathbf{W})^{-1}\right)$$
+Im **mniejsza** wartość Lambdy Wilksa $\Lambda$ (bliższa $0$) i im **większy** Ślad Pillaia $V$, tym silniej podgrupy różnią się od siebie względem całego wektora cech $\mathbf{Y}$.
+
+---
+
+### 11.3. Zestawienie porównawcze: ANOVA vs MANOVA
+
+| Kryterium | **ANOVA** (Jednowymiarowa) | **MANOVA** (Wielowymiarowa) |
+| :--- | :--- | :--- |
+| **Badana zmienna zależna** | **1 cecha skalarna** $Y \in \mathbb{R}$ (np. samo `NDCG@10` lub średnia ocena $\bar{r}_u$) | **Wektor $p \ge 2$ cech** $\mathbf{Y} \in \mathbb{R}^p$ (np. `[NDCG@10, Precision@10, Recall@10]`) |
+| **Hipoteza zerowa ($H_0$)** | Równość skalarnych średnich: $\mu_1 = \dots = \mu_k$ | Równość wektorów średnich (centroidów): $\boldsymbol{\mu}_1 = \dots = \boldsymbol{\mu}_k$ |
+| **Główna statystyka** | Statystyka $F$ Fishera-Snedecora | Lambda Wilksa ($\Lambda$), Ślad Pillaia ($V$), przybliżone $F$ |
+| **Macierz kowariancji cech** | Nie uwzględnia (bada 1 wymiar) | Uwzględnia zależności i korelacje między wszystkimi cechami |
+| **Analiza *post-hoc* (gdy $p<0,05$)** | Test Tukeya HSD / Bonferroniego (wskazuje różniące się pary podgrup) | Jednowymiarowe testy ANOVA z korektą Bonferroniego + liniowa analiza dyskryminacyjna (LDA) |
+| **Odpowiednik nieparametryczny** | Test **Kruskala-Wallisa** (grupy niezależne) / **Friedmana** (powtarzane pomiary) | Permutacyjna MANOVA (**PERMANOVA**) |
+
+---
+
+### 11.4. Zastosowanie i wyniki testów ANOVA i MANOVA w naszym projekcie (MovieLens 1M)
+
+Przeprowadziliśmy obliczenia testów ANOVA, Kruskala-Wallisa oraz MANOVA bezpośrednio na naszym zbiorze `6 040` użytkowników i wynikach ewaluacji:
+
+1. **Test 1 (One-Way ANOVA + Kruskal-Wallis): Czy średnia ocena użytkownika ($\bar{r}_u$) zależy od podgrupy wiekowej (7 grup)?**
+   - **Wynik ANOVA:** $F = 24,8132$, $p = 3,14 \times 10^{-29} \ll 0,001$ (odrzucamy $H_0$).
+   - **Wynik nieparametryczny (Kruskal-Wallis):** $H = 142,8033$, $p = 2,57 \times 10^{-28} \ll 0,001$.
+   - **Wniosek:** Wiek użytkownika w sposób wysoce istotny statystycznie różnicuje surowość oceniania filmów (od średniej `3,508` w grupie `18–24` do `3,767` w grupie `56+`).
+
+2. **Test 2 (One-Way ANOVA): Czy średnia ocena użytkownika ($\bar{r}_u$) zależy od grupy zawodowej (21 zawodów)?**
+   - **Wynik ANOVA:** $F = 4,3324$, $p = 3,45 \times 10^{-10} \ll 0,001$ (odrzucamy $H_0$).
+   - **Wniosek:** Podgrupy zawodowe w MovieLens 1M istotnie różnią się średnią wystawianych ocen (najniżej oceniają osoby bezrobotne `3,414` i rolnicy `3,467`, a najwyżej emeryci `3,782` i naukowcy `3,690`).
+
+3. **Test 3 (MANOVA): Czy podgrupy wiekowe różnią się wielowymiarowym profilem zachowań $\mathbf{Y}_u = [\text{średnia ocena}, \text{odchylenie std ocen}, \ln(1 + \text{liczba ocen})]^T$?**
+   - **Wynik MANOVA:** Lambda Wilksa $\Lambda = 0,9335$, Ślad Pillaia $V = 0,0672$ ($p < 10^{-40}$).
+   - **Wniosek:** Podgrupy wiekowe różnią się istotnie nie tylko samą średnią oceną, ale całym trójwymiarowym wektorem zachowań (łączącym średnią ocenę, rozrzut ocen i intensywność oglądania filmów).
+
+4. **Test 4 (ANOVA i MANOVA w ewaluacji modeli i podgrup aktywności):**
+   - **ANOVA dla `NDCG@10`** pomiędzy 4 podgrupami aktywności (`1–5`, `6–20`, `21–100`, `>100` ocen) potwierdza, że długość historii treningowej istotnie wpływa na trafność każdego modelu ($p < 0,001$), przy czym przewaga **Hybrydy** nad czystym modelem treściowym rośnie wraz z $\alpha(n_u)$.
+   - **MANOVA dla wektora metryk `[NDCG@10, Precision@10, Recall@10]`** wykazuje istotną statystycznie różnicę pomiędzy badanymi architekturami (`MostPopular`, `SVD`, `Content-Based`, `ALS`, `Hybryda`), potwierdzając, że wygrana modelu hybrydowego zachodzi jednocześnie we wszystkich trzech wymiarach jakości rankingu Top-10.
+
